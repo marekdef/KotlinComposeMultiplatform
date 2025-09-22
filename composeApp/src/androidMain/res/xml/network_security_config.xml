@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">your.server.com</domain>
+        <trust-anchors>
+            <!-- Trust preinstalled CAs -->
+            <certificates src="system" />
+            <!-- Additionally trust user added CAs -->
+            <certificates src="user" />
+        </trust-anchors>
+    </domain-config>
+
+    <!-- OR, for debug builds with a self-signed cert -->
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="user" />
+            <!-- Add your self-signed certificate here for debug builds -->
+            <!-- <certificates src="@raw/my_self_signed_debug_ca" /> -->
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>
