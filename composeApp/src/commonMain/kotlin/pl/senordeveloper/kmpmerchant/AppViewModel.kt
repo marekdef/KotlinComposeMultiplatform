@@ -12,11 +12,50 @@ import pl.senordeveloper.kmpmerchant.di.User
 import pl.senordeveloper.kmpmerchant.di.UserRequest
 
 class AppViewModel(val apiService: ApiService) : ViewModel() {
-    fun login(username: String, password: String) {
-        viewModelScope.launch {
+    fun onUsernameChange(newValue: TextFieldValue) {
+        _appState.update {
+            when (it) {
+                is AppState.LoginState -> it.copy(
+                    username = newValue
+                )
 
+                is AppState.UserLoggedIn -> throw IllegalStateException()
+            }
         }
     }
+
+    fun onPasswordChange(newValue: TextFieldValue) {
+        _appState.update {
+            when (it) {
+                is AppState.LoginState -> it.copy(
+                    password = newValue
+                )
+
+                is AppState.UserLoggedIn -> throw IllegalStateException()
+            }
+        }
+    }
+
+
+    fun login() {
+        when (val state = _appState.value) {
+            is AppState.LoginState -> {
+                viewModelScope.launch {
+                    val user: User =
+                        apiService.login(UserRequest(state.username.text, state.password.text))
+
+                    _appState.update {
+                        state.loggedIn(user)
+                    }
+                }
+
+
+            }
+
+            is AppState.UserLoggedIn -> throw IllegalStateException()
+        }
+    }
+
 
     private val _appState = MutableStateFlow<AppState>(
         AppState.LoginState(
@@ -28,10 +67,18 @@ class AppViewModel(val apiService: ApiService) : ViewModel() {
     val appState = _appState.asStateFlow()
 
     sealed interface AppState {
+
+
         data class LoginState(
             val username: TextFieldValue,
             val password: TextFieldValue,
             val isLoading: Boolean
-        ): AppState
+        ) : AppState {
+            fun loggedIn(user: User): UserLoggedIn = UserLoggedIn(user)
+        }
+
+        data class UserLoggedIn(val user: User) : AppState {
+
+        }
     }
 }
