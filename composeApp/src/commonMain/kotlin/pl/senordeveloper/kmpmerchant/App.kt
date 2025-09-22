@@ -13,9 +13,7 @@ import pl.senordeveloper.kmpmerchant.ui.UserLoggedInScreen
 @Preview
 fun App(viewModel: AppViewModel = koinViewModel<AppViewModel>()) {
     val state by viewModel.appState.collectAsStateWithLifecycle()
-
     MaterialTheme {
-
         when(val state = state) {
             is AppViewModel.AppState.LoginState -> LoginScreen(
                 state = state,
