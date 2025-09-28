@@ -7,11 +7,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import pl.senordeveloper.kmpmerchant.di.ApiService
-import pl.senordeveloper.kmpmerchant.di.User
-import pl.senordeveloper.kmpmerchant.di.UserRequest
+import pl.senordeveloper.kmpmerchant.di.UserWithTokens
+import pl.senordeveloper.kmpmerchant.network.services.AuthService
 
-class AppViewModel(val apiService: ApiService) : ViewModel() {
+class AppViewModel(val authService: AuthService) : ViewModel() {
     fun onUsernameChange(newValue: TextFieldValue) {
         _appState.update {
             when (it) {
@@ -41,15 +40,13 @@ class AppViewModel(val apiService: ApiService) : ViewModel() {
         when (val state = _appState.value) {
             is AppState.LoginState -> {
                 viewModelScope.launch {
-                    val user: User =
-                        apiService.login(UserRequest(state.username.text, state.password.text))
-
-                    _appState.update {
-                        state.loggedIn(user)
+                    authService.login(state.username.text, state.password.text).onRight {
+                        userWithTokens ->
+                        _appState.update {
+                            state.loggedIn(userWithTokens)
+                        }
                     }
                 }
-
-
             }
 
             is AppState.UserLoggedIn -> throw IllegalStateException()
@@ -74,10 +71,10 @@ class AppViewModel(val apiService: ApiService) : ViewModel() {
             val password: TextFieldValue,
             val isLoading: Boolean
         ) : AppState {
-            fun loggedIn(user: User): UserLoggedIn = UserLoggedIn(user)
+            fun loggedIn(user: UserWithTokens): UserLoggedIn = UserLoggedIn(user)
         }
 
-        data class UserLoggedIn(val user: User) : AppState {
+        data class UserLoggedIn(val user: UserWithTokens) : AppState {
 
         }
     }

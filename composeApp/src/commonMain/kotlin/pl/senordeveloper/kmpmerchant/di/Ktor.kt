@@ -7,6 +7,8 @@ import kotlinx.serialization.json.Json // Added import
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import pl.senordeveloper.kmpmerchant.AppViewModel
+import pl.senordeveloper.kmpmerchant.network.services.AuthService
+import pl.senordeveloper.kmpmerchant.network.services.impl.AuthServiceImpl
 
 val networkModule = module {
     single<HttpClient> { HttpClient() {
@@ -19,7 +21,7 @@ val networkModule = module {
         }
     } }
 
-    single<ApiService> { ApiServiceImpl(get())}
+    single<AuthService> { AuthServiceImpl(get())}
 }
 
 val viewModelsModule = module {

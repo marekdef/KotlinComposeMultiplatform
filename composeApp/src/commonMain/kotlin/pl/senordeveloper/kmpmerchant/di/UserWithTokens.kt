@@ -3,7 +3,7 @@ package pl.senordeveloper.kmpmerchant.di
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class User(
+data class UserWithTokens(
     val id: String,
     val username: String,
     val email: String,
@@ -11,6 +11,7 @@ data class User(
     val lastName: String,
     val gender: String,
     val image: String,
+    val accessToken: String,
+    val refreshToken: String,
 ) {
 }
-
