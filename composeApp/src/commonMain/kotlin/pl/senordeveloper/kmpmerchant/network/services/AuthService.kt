@@ -6,7 +6,7 @@ import pl.senordeveloper.kmpmerchant.di.User
 import pl.senordeveloper.kmpmerchant.di.UserWithTokens
 
 interface AuthService {
-    suspend fun login(username: String, password: String): Either<Exception, UserWithTokens>
-    suspend fun get(): Either<Exception, User>
-    suspend fun refreshTokens(): Either<Exception, Tokens>
+    suspend fun login(username: String, password: String): Either<Throwable, UserWithTokens>
+    suspend fun get(): Either<Throwable, User>
+    suspend fun refreshTokens(): Either<Throwable, Tokens>
 }

@@ -12,16 +12,39 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import pl.senordeveloper.kmpmerchant.AppViewModel
+import org.koin.compose.viewmodel.koinViewModel
+import pl.senordeveloper.kmpmerchant.viewmodel.LoginViewModel
+
+@Composable
+fun LoginScreen(
+    viewModel: LoginViewModel = koinViewModel<LoginViewModel>(),
+    onLoggedIn: () -> Unit = {}
+) {
+
+    ObserveAsEvents(viewModel.events) {
+        when(it) {
+            is LoginViewModel.Event.LoggedIn -> onLoggedIn()
+        }
+    }
+
+    LoginScreen(
+        state = viewModel.state.collectAsStateWithLifecycle().value,
+        onUserNameChange = viewModel::onUsernameChange,
+        onPasswordChange = viewModel::onPasswordChange,
+        onLoginClick = viewModel::login
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    state: AppViewModel.AppState.LoginState,
+    state: LoginViewModel.LoginState,
     onUserNameChange: (TextFieldValue) -> Unit = {},
     onPasswordChange: (TextFieldValue) -> Unit = {},
     onLoginClick: () -> Unit = {},
@@ -48,6 +71,14 @@ fun LoginScreen(
                 CircularProgressIndicator()
             }
 
+            state.error?.let { error ->
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    text = state.error,
+                    color = androidx.compose.ui.graphics.Color.Red
+                )
+            }
+
             Button(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
                 onClick = onLoginClick,
@@ -65,10 +96,23 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     LoginScreen(
-        state = AppViewModel.AppState.LoginState(
-            username = androidx.compose.ui.text.input.TextFieldValue("Jov"),
-            password = androidx.compose.ui.text.input.TextFieldValue("Mit"),
+        state = LoginViewModel.LoginState(
+            username = TextFieldValue("Jov"),
+            password = TextFieldValue("Mit"),
             isLoading = false,
+        )
+    )
+}
+
+@Preview
+@Composable
+fun LoginScreenErrorPreview() {
+    LoginScreen(
+        state = LoginViewModel.LoginState(
+            username = TextFieldValue("Jov"),
+            password = TextFieldValue("Mit"),
+            isLoading = false,
+            error = "Invalid login"
         )
     )
 }

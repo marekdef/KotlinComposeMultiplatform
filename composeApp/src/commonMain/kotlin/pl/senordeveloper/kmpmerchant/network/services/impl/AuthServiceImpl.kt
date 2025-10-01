@@ -3,9 +3,12 @@ package pl.senordeveloper.kmpmerchant.network.services.impl
 import arrow.core.Either
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.accept
+import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import pl.senordeveloper.kmpmerchant.di.LoginRequest
 import pl.senordeveloper.kmpmerchant.di.Tokens
@@ -15,27 +18,25 @@ import pl.senordeveloper.kmpmerchant.network.services.AuthService
 
 class AuthServiceImpl(
     val httpClient: HttpClient
-): AuthService {
+) : AuthService {
     override suspend fun login(
         username: String,
         password: String
-    ): Either<Exception, UserWithTokens> = Either.catch {
+    ): Either<Throwable, UserWithTokens> = Either.catch {
         httpClient.post(
             urlString = "https://dummyjson.com/auth/login"
         ) {
             contentType(ContentType.Application.Json)
             setBody(LoginRequest(username, password))
-        }.body<UserWithTokens>()
-    }.mapLeft {
-        throwable ->
-        when(throwable) {
-           is Exception -> throwable
-           else -> Exception ("Wrapping throwable",throwable)
-        }
+        }.body()
     }
 
-    override suspend fun get(): Either<Exception, User> {
-        TODO("Not yet implemented")
+    override suspend fun get(): Either<Throwable, User> = Either.catch {
+        httpClient.get(
+            urlString = "https://dummyjson.com/auth/me"
+        ) {
+            accept(ContentType.Application.Json)
+        }.body<User>()
     }
 
     override suspend fun refreshTokens(): Either<Exception, Tokens> {
