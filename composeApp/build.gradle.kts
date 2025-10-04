@@ -54,6 +54,7 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.auth)
+            implementation(libs.log4k)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

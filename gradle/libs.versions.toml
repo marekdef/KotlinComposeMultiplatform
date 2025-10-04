@@ -44,6 +44,7 @@ androidx-navigation = { module = "androidx.navigation:navigation-compose", versi
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version = "2.9.0" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+log4k = { module = "de.peilicke.sascha:log4k", version = "1.5.2" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

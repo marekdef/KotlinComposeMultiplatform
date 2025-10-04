@@ -1,4 +1,4 @@
-package pl.senordeveloper.kmpmerchant.di
+package pl.senordeveloper.kmpmerchant.network.dto
 
 import kotlinx.serialization.Serializable
 

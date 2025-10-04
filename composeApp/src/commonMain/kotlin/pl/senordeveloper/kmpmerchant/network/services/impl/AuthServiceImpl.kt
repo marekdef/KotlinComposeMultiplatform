@@ -8,12 +8,11 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import pl.senordeveloper.kmpmerchant.di.LoginRequest
-import pl.senordeveloper.kmpmerchant.di.Tokens
-import pl.senordeveloper.kmpmerchant.di.User
-import pl.senordeveloper.kmpmerchant.di.UserWithTokens
+import pl.senordeveloper.kmpmerchant.network.dto.LoginRequest
+import pl.senordeveloper.kmpmerchant.network.dto.Tokens
+import pl.senordeveloper.kmpmerchant.network.dto.User
+import pl.senordeveloper.kmpmerchant.network.dto.UserWithTokens
 import pl.senordeveloper.kmpmerchant.network.services.AuthService
 
 class AuthServiceImpl(
