@@ -15,7 +15,6 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.viewModel
@@ -44,32 +43,35 @@ val networkModule = module {
                 logger = Logger.SIMPLE // Uses a simple logger that prints to stdout
                 level = LogLevel.ALL    // Log all levels (HEADERS, BODY, INFO)
             }
-
             install(Auth) {
                 bearer {
+                    val storage: Storage = get()
                     loadTokens {
-                        val storage: Storage = get()
                         storage.getBearerToken().also {
                             Log.debug("loadTokens $it")
                         }
                     }
                     refreshTokens {
-                        client.post(urlString = "https://dummyjson.com/auth/refresh") {
-                            accept(ContentType.Application.Json)
-                            contentType(ContentType.Application.Json)
-                            setBody(
-                                RefreshTokenRequest(
-                                    refreshToken = oldTokens?.refreshToken,
-                                    accessToken = oldTokens?.accessToken
-                                ).also {
-                                    Log.debug("refreshTokens $it")
+                        oldTokens?.let { oldTokens ->
+                            oldTokens.refreshToken?.let { refreshToken ->
+                                client.post(urlString = "https://dummyjson.com/auth/refresh") {
+                                    accept(ContentType.Application.Json)
+                                    contentType(ContentType.Application.Json)
+                                    setBody(
+                                        RefreshTokenRequest(
+                                            refreshToken = refreshToken,
+                                        ).also {
+                                            Log.debug("refreshTokens $it")
+                                        }
+                                    )
+                                    markAsRefreshTokenRequest()
+                                }.body<Tokens>().let { tokens ->
+                                    storage.setTokens(
+                                        accessToken = tokens.accessToken,
+                                        refreshToken = tokens.refreshToken
+                                    )
                                 }
-                            )
-                            markAsRefreshTokenRequest()
-                        }.body<Tokens>().let {
-                            val storage: Storage = get()
-                            storage.setTokens(it.accessToken, it.refreshToken)
-                            BearerTokens(it.accessToken, it.refreshToken)
+                            }
                         }
                     }
                 }
@@ -85,12 +87,14 @@ class Storage {
     var tokens: BearerTokens? = null
     fun getBearerToken(): BearerTokens? = tokens
 
-    fun setTokens(accessToken: String, refreshToken: String?) {
-        tokens = BearerTokens(accessToken, refreshToken)
+    fun setTokens(accessToken: String, refreshToken: String?): BearerTokens {
+        val bearerTokens = BearerTokens(accessToken, refreshToken)
+        tokens = bearerTokens
+        return bearerTokens
     }
 }
 
 val viewModelsModule = module {
-    viewModel { LoginViewModel(get(), get()) }
-    viewModel { UserLoggedInViewModel(get()) }
+    viewModel { LoginViewModel(authService = get(), storage = get()) }
+    viewModel { UserLoggedInViewModel(authService = get()) }
 }
