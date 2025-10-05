@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import pl.senordeveloper.kmpmerchant.network.dto.User
@@ -50,10 +51,15 @@ fun UserLoggedInScreen(
                     Text("Error: $it")
                 }
                 state.user?.let {
+                    user ->
                     Text(
                         modifier = Modifier
                             .padding(16.dp),
-                        text = "Logged in as ${it.username}"
+                        text = "Logged in as ${user.username}"
+                    )
+                    AsyncImage(
+                        model = user.image,
+                        contentDescription = "User avatar",
                     )
                 }
 
