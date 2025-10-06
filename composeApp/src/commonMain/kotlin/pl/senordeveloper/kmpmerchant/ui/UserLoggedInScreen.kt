@@ -1,6 +1,7 @@
 package pl.senordeveloper.kmpmerchant.ui
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -50,17 +51,27 @@ fun UserLoggedInScreen(
                 state.error?.let {
                     Text("Error: $it")
                 }
-                state.user?.let {
-                    user ->
+                state.user?.let { user ->
                     Text(
                         modifier = Modifier
                             .padding(16.dp),
                         text = "Logged in as ${user.username}"
                     )
-                    AsyncImage(
-                        model = user.image,
-                        contentDescription = "User avatar",
-                    )
+                    Row {
+                        AsyncImage(
+                            model = user.image,
+                            contentDescription = "User avatar",
+                        )
+
+                        Column {
+                            Row {
+                                Text(user.firstName)
+                                Text(user.lastName)
+                            }
+                            Text(user.email)
+                        }
+                    }
+
                 }
 
                 Button(

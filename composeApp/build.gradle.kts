@@ -27,8 +27,10 @@ kotlin {
     
     sourceSets {
         iosSimulatorArm64Main.dependencies {
+            implementation(libs.coil.compose.iossimulatorarm64)
         }
-        iosMain.dependencies {
+        iosArm64Main.dependencies {
+            implementation(libs.coil.compose.iosarm64)
         }
         androidMain.dependencies {
             implementation(compose.preview)
