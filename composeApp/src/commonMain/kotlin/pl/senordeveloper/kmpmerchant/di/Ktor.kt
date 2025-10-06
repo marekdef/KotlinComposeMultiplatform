@@ -22,9 +22,12 @@ import org.koin.dsl.module
 import pl.senordeveloper.kmpmerchant.network.dto.RefreshTokenRequest
 import pl.senordeveloper.kmpmerchant.network.dto.Tokens
 import pl.senordeveloper.kmpmerchant.network.services.AuthService
+import pl.senordeveloper.kmpmerchant.network.services.UserService
 import pl.senordeveloper.kmpmerchant.network.services.impl.AuthServiceImpl
+import pl.senordeveloper.kmpmerchant.network.services.impl.UserServiceImpl
 import pl.senordeveloper.kmpmerchant.viewmodel.LoginViewModel
 import pl.senordeveloper.kmpmerchant.viewmodel.UserLoggedInViewModel
+import pl.senordeveloper.kmpmerchant.viewmodel.UsersViewModel
 import saschpe.log4k.Log
 
 val networkModule = module {
@@ -80,6 +83,7 @@ val networkModule = module {
     }
 
     single<AuthService> { AuthServiceImpl(get()) }
+    single<UserService> { UserServiceImpl(get()) }
     single<Storage> { Storage() }
 }
 
@@ -97,4 +101,5 @@ class Storage {
 val viewModelsModule = module {
     viewModel { LoginViewModel(authService = get(), storage = get()) }
     viewModel { UserLoggedInViewModel(authService = get()) }
+    viewModel { UsersViewModel(userService = get()) }
 }

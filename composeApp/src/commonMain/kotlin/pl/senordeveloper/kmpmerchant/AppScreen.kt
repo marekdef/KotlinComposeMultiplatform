@@ -20,6 +20,7 @@ import pl.senordeveloper.kmpmerchant.ui.LoginScreen
 import pl.senordeveloper.kmpmerchant.ui.UserLoggedInScreen
 
 import androidx.navigation.compose.rememberNavController
+import pl.senordeveloper.kmpmerchant.ui.UsersScreen
 import pl.senordeveloper.kmpmerchant.viewmodel.LoginViewModel
 
 @Composable
@@ -46,7 +47,16 @@ fun AppScreen() {
                 composable(
                     route = Routes.User.route
                 ) {
-                    UserLoggedInScreen()
+                    UserLoggedInScreen(
+                        onUsers = {
+                            navController.navigate(Routes.Users.route)
+                        }
+                    )
+                }
+                composable(
+                    route = Routes.Users.route
+                ) {
+                    UsersScreen()
                 }
             }
         }

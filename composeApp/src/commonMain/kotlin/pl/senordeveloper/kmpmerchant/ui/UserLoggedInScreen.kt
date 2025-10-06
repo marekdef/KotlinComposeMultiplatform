@@ -15,7 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
+//import coil3.compose.AsyncImage
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import pl.senordeveloper.kmpmerchant.network.dto.User
@@ -23,16 +23,17 @@ import pl.senordeveloper.kmpmerchant.viewmodel.UserLoggedInViewModel
 
 
 @Composable
-fun UserLoggedInScreen(viewModel: UserLoggedInViewModel = koinViewModel<UserLoggedInViewModel>()) {
+fun UserLoggedInScreen(viewModel: UserLoggedInViewModel = koinViewModel<UserLoggedInViewModel>(), onUsers: () -> Unit = {}) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    UserLoggedInScreen(state, onRefresh = viewModel::refresh)
+    UserLoggedInScreen(state, onRefresh = viewModel::refresh, onUsers = onUsers)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserLoggedInScreen(
     state: UserLoggedInViewModel.State,
-    onRefresh: () -> Unit = {}
+    onRefresh: () -> Unit = {},
+    onUsers: () -> Unit = {}
 ) {
     Scaffold { paddingValues ->
         val pullToRefreshState = rememberPullToRefreshState()
@@ -58,10 +59,10 @@ fun UserLoggedInScreen(
                         text = "Logged in as ${user.username}"
                     )
                     Row {
-                        AsyncImage(
+                        /*AsyncImage(
                             model = user.image,
                             contentDescription = "User avatar",
-                        )
+                        )*/
 
                         Column {
                             Row {
@@ -85,6 +86,18 @@ fun UserLoggedInScreen(
                         if (state.isLoading)
                             "Loading..."
                         else "Refresh"
+                    )
+                }
+
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    onClick = onUsers,
+                    enabled = !state.isLoading
+                ) {
+                    Text(
+                        "Go to users"
                     )
                 }
             }
