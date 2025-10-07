@@ -14,7 +14,7 @@ class UserServiceImpl(
     val httpClient: HttpClient
 ): UserService {
     override suspend fun getUsers(): Either<Throwable, UserListResponse>  = Either.catch {
-        httpClient.get("https://dummyjson.com/users") {
+        httpClient.get("https://dummyjson.com/users?limit=200") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
         }.body<UserListResponse>()

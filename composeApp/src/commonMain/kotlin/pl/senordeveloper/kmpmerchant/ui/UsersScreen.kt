@@ -14,7 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-//import coil3.compose.AsyncImage
+import coil3.compose.AsyncImage
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import pl.senordeveloper.kmpmerchant.network.dto.users.Address
@@ -65,11 +65,11 @@ fun UsersScreen(
 @Composable
 fun UserItem(user: FullUser) {
     Row(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
-//        AsyncImage(
-//            modifier = Modifier.padding(8.dp),
-//            model = user.image,
-//            contentDescription = "User avatar",
-//        )
+        AsyncImage(
+            modifier = Modifier.padding(8.dp),
+            model = user.image,
+            contentDescription = "User avatar",
+        )
 
         Column(Modifier.fillMaxWidth()) {
             Text(

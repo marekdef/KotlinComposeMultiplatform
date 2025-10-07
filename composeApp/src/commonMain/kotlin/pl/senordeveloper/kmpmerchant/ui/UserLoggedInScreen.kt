@@ -2,11 +2,13 @@ package pl.senordeveloper.kmpmerchant.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -15,7 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-//import coil3.compose.AsyncImage
+import coil3.compose.AsyncImage
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import pl.senordeveloper.kmpmerchant.network.dto.User
@@ -23,7 +25,10 @@ import pl.senordeveloper.kmpmerchant.viewmodel.UserLoggedInViewModel
 
 
 @Composable
-fun UserLoggedInScreen(viewModel: UserLoggedInViewModel = koinViewModel<UserLoggedInViewModel>(), onUsers: () -> Unit = {}) {
+fun UserLoggedInScreen(
+    viewModel: UserLoggedInViewModel = koinViewModel<UserLoggedInViewModel>(),
+    onUsers: () -> Unit = {}
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     UserLoggedInScreen(state, onRefresh = viewModel::refresh, onUsers = onUsers)
 }
@@ -35,71 +40,70 @@ fun UserLoggedInScreen(
     onRefresh: () -> Unit = {},
     onUsers: () -> Unit = {}
 ) {
-    Scaffold { paddingValues ->
-        val pullToRefreshState = rememberPullToRefreshState()
+    val pullToRefreshState = rememberPullToRefreshState()
 
-        PullToRefreshBox(
-            modifier = Modifier.padding(paddingValues).fillMaxWidth(),
-            isRefreshing = state.isLoading,
-            onRefresh = onRefresh,
-            state = pullToRefreshState
+    PullToRefreshBox(
+        modifier = Modifier.padding(top = 32.dp).fillMaxSize(),
+        isRefreshing = state.isLoading,
+        onRefresh = onRefresh,
+        state = pullToRefreshState
+    ) {
+        Column(
+            Modifier
+                .padding(top = 16.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            Column(
-                Modifier
-                    .padding(top = 16.dp)
-                    .fillMaxWidth()
-            ) {
-                state.error?.let {
-                    Text("Error: $it")
-                }
-                state.user?.let { user ->
-                    Text(
-                        modifier = Modifier
-                            .padding(16.dp),
-                        text = "Logged in as ${user.username}"
+            state.error?.let {
+                Text("Error: $it")
+            }
+            state.user?.let { user ->
+                Text(
+                    modifier = Modifier
+                        .padding(16.dp),
+                    text = "Logged in as ${user.username}"
+                )
+                Row {
+                    AsyncImage(
+                        model = user.image,
+                        contentDescription = "User avatar",
                     )
-                    Row {
-                        /*AsyncImage(
-                            model = user.image,
-                            contentDescription = "User avatar",
-                        )*/
 
-                        Column {
-                            Row {
-                                Text(user.firstName)
-                                Text(user.lastName)
-                            }
-                            Text(user.email)
+                    Column {
+                        Row {
+                            Text(user.firstName)
+                            Text(user.lastName)
                         }
+                        Text(user.email)
                     }
-
                 }
 
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    onClick = onRefresh,
-                    enabled = !state.isLoading
-                ) {
-                    Text(
-                        if (state.isLoading)
-                            "Loading..."
-                        else "Refresh"
-                    )
-                }
+            }
 
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    onClick = onUsers,
-                    enabled = !state.isLoading
-                ) {
-                    Text(
-                        "Go to users"
-                    )
-                }
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                onClick = onRefresh,
+                enabled = !state.isLoading
+            ) {
+                Text(
+                    if (state.isLoading)
+                        "Loading..."
+                    else "Refresh"
+                )
+            }
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                onClick = onUsers,
+                enabled = !state.isLoading
+            ) {
+                Text(
+                    "Go to users"
+                )
             }
         }
     }

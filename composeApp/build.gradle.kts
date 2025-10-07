@@ -27,10 +27,10 @@ kotlin {
 
     sourceSets {
         iosSimulatorArm64Main.dependencies {
-//            implementation(libs.coil.compose.iossimulatorarm64)
+            implementation(libs.coil.compose.iossimulatorarm64)
         }
         iosArm64Main.dependencies {
-//            implementation(libs.coil.compose.iosarm64)
+            implementation(libs.coil.compose.iosarm64)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -40,7 +40,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
-//            implementation(libs.coil.compose.android)
+            implementation(libs.coil.compose.android)
         }
         commonMain.dependencies {
             implementation(libs.koin.compose.viewmodel)
@@ -62,8 +62,8 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.ktor.client.auth)
             implementation(libs.log4k)
-//            implementation(libs.coil.compose)
-//            implementation(libs.coil.network.ktor)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

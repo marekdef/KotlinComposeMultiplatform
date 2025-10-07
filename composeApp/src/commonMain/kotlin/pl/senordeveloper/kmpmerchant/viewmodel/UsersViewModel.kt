@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -22,7 +21,9 @@ class UsersViewModel(
     // create mutable state flow
     private val _state = MutableStateFlow(State())
     val state: StateFlow<State> =
-        _state.onStart { loadUsers() }.stateIn(viewModelScope, WhileSubscribed(5000), State())
+        _state
+            .onStart { loadUsers() }
+            .stateIn(viewModelScope, WhileSubscribed(5_000), State())
 
     fun loadUsers() {
         viewModelScope.launch {

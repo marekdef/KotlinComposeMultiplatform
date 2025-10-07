@@ -32,7 +32,7 @@ import saschpe.log4k.Log
 
 val networkModule = module {
     single<HttpClient> {
-        HttpClient() {
+        HttpClient {
             expectSuccess = true
 
             install(ContentNegotiation) {
