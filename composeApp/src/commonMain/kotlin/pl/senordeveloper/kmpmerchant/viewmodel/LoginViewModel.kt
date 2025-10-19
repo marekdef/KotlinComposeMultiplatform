@@ -3,6 +3,7 @@ package pl.senordeveloper.kmpmerchant.viewmodel
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.ktor.client.plugins.auth.providers.BearerTokens
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -10,12 +11,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import pl.senordeveloper.kmpmerchant.TokenStorage
 import pl.senordeveloper.kmpmerchant.di.Storage
 import pl.senordeveloper.kmpmerchant.network.services.AuthService
 
 class LoginViewModel(
     val authService: AuthService,
-    val storage: Storage,
+    val tokenStorage: TokenStorage,
 ) : ViewModel() {
     private val _state = MutableStateFlow<LoginState>(
         LoginState(
@@ -46,7 +48,7 @@ class LoginViewModel(
         viewModelScope.launch {
             authService.login(state.username.text, state.password.text)
                 .onRight { userWithTokens ->
-                    storage.setTokens(userWithTokens.accessToken, userWithTokens.refreshToken)
+                    tokenStorage.storeBearerToken(BearerTokens(userWithTokens.accessToken, userWithTokens.refreshToken))
                     _events.emit(Event.LoggedIn)
                 }.onLeft { throwable ->
                     _state.update {

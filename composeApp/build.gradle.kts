@@ -64,6 +64,11 @@ kotlin {
             implementation(libs.log4k)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+            implementation(libs.multiplatform.settings)
+
+            implementation(libs.androidx.datastore)
+            // The Preferences DataStore library
+            implementation(libs.androidx.datastore.preferences)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
