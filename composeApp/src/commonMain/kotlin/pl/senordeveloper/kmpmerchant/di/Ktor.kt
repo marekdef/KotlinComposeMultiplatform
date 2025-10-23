@@ -1,10 +1,5 @@
 package pl.senordeveloper.kmpmerchant.di
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringPreferencesKey
-import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.auth.Auth
@@ -21,11 +16,8 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.flow.lastOrNull
-import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.viewModel
-import org.koin.core.scope.Scope
 import org.koin.dsl.module
 import pl.senordeveloper.kmpmerchant.TokenStorage
 import pl.senordeveloper.kmpmerchant.network.dto.RefreshTokenRequest
@@ -38,13 +30,6 @@ import pl.senordeveloper.kmpmerchant.viewmodel.LoginViewModel
 import pl.senordeveloper.kmpmerchant.viewmodel.UserLoggedInViewModel
 import pl.senordeveloper.kmpmerchant.viewmodel.UsersViewModel
 import saschpe.log4k.Log
-import kotlin.math.sin
-
-val prefsModule = module {
-    single<TokenStorage> {
-        TokenStorage(get())
-    }
-}
 
 val networkModule = module {
     single<HttpClient> {

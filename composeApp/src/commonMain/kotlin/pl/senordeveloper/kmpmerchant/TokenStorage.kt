@@ -8,24 +8,16 @@ import io.ktor.client.plugins.auth.providers.BearerTokens
 import kotlinx.coroutines.flow.firstOrNull
 
 class TokenStorage(
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<BearerTokens?>
 ) {
-    private val accessTokenKey = stringPreferencesKey("access_token")
-
-
     suspend fun storeBearerToken(tokens: BearerTokens) {
-        dataStore.edit { preferences ->
-            preferences[accessTokenKey] = BearerTokensSerializer.serialize(
-                BearerTokensWrapper.fromBearerTokens(tokens))
+        dataStore.updateData { data ->
+            tokens
         }
     }
 
-    suspend fun readBearerToken(): BearerTokens? = dataStore.data.firstOrNull()?.let { preferences ->
-        val tokens = preferences[accessTokenKey]
-        return tokens?.let {
-            BearerTokensWrapper.toBearerTokens(BearerTokensSerializer.deserialize(it))
-        }
-    }
+    suspend fun readBearerToken(): BearerTokens? =
+        dataStore.data.firstOrNull()
 }
 
 
