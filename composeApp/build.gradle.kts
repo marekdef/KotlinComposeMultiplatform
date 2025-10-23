@@ -44,8 +44,8 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(libs.koin.compose.viewmodel)
-            implementation(libs.ktor.client.core)
             implementation(libs.koin.core)
+            implementation(libs.ktor.client.core)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
