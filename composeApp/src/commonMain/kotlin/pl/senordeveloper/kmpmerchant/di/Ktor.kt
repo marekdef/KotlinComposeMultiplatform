@@ -57,9 +57,14 @@ private fun provideHttpClient(storage: TokenStorage): HttpClient = HttpClient {
     install(Auth) {
         bearer {
             loadTokens {
-                storage.readBearerToken()
+                Log.debug("loadTokens")
+                runCatching { storage.readBearerToken().also {
+                    Log.debug("Loaded tokens: $it")
+                } }.getOrNull()
             }
+
             refreshTokens {
+                Log.debug("refreshTokens called $oldTokens")
                 oldTokens?.let { oldTokens ->
                     oldTokens.refreshToken?.let { refreshToken ->
                         client.post(urlString = "https://dummyjson.com/auth/refresh") {

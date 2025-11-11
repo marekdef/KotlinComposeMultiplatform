@@ -42,6 +42,10 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.coil.compose.android)
         }
+        androidUnitTest.dependencies {
+            implementation(libs.bundles.unit.tests)
+            runtimeOnly(libs.junit.jupiter.engine)
+        }
         commonMain.dependencies {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.core)
@@ -72,6 +76,8 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlin.coroutines.test)
+            implementation(libs.truthish)
         }
     }
 }
@@ -101,9 +107,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-}
+    testOptions.unitTests {
+        isIncludeAndroidResources = true
+        isReturnDefaultValues = true
 
-dependencies {
-    debugImplementation(compose.uiTooling)
+        all {
+            test ->
+                test.useJUnitPlatform()
+        }
+    }
 }
-

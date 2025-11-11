@@ -4,6 +4,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.ktor.client.plugins.auth.providers.BearerTokens
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -22,7 +23,7 @@ class LoginViewModel(
     private val _state = MutableStateFlow<LoginState>(
         LoginState(
             username = TextFieldValue("emilys"),
-            password = TextFieldValue("emilyspass")
+            password = TextFieldValue("emilyspass"),
         )
     )
     val state = _state.asStateFlow()
@@ -32,20 +33,30 @@ class LoginViewModel(
 
     fun onUsernameChange(newValue: TextFieldValue) {
         _state.update {
-            it.copy(username = newValue)
+            if (newValue.text.length < 20) {
+                it.copy(username = newValue)
+            } else it
         }
     }
 
     fun onPasswordChange(newValue: TextFieldValue) {
         _state.update {
-            it.copy(password = newValue)
+            if (newValue.text.length < 20) {
+                it.copy(username = newValue)
+            } else it
         }
     }
 
 
+    private var loginJob: Job? = null
+
     fun login() {
         val state = _state.value
-        viewModelScope.launch {
+        loginJob?.cancel()
+        loginJob = viewModelScope.launch {
+            _state.update {
+                it.copy(isLoading = true, error = null)
+            }
             authService.login(state.username.text, state.password.text)
                 .onRight { userWithTokens ->
                     tokenStorage.storeBearerToken(BearerTokens(userWithTokens.accessToken, userWithTokens.refreshToken))

@@ -31,7 +31,9 @@ fun AppScreen() {
                     route = Routes.Login.route
                 ) {
                     LoginScreen(onLoggedIn = {
-                        navController.navigate(Routes.User.route)
+                        navController.navigate(Routes.User.route) {
+                            popUpTo(Routes.Login.route) { inclusive = true }
+                        }
                     })
                 }
                 composable(

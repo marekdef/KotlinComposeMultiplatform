@@ -12,15 +12,18 @@ object BearerTokenSerializer : OkioSerializer<BearerTokens?> {
     override val defaultValue: BearerTokens? = null
 
     override suspend fun readFrom(source: BufferedSource): BearerTokens? {
-        if (source.readByte() == 0.toByte()) {
+        if (source.exhausted()) {
             return null
         }
 
-        val accessToken = source.readUtf8()
-        val hasRefreshToken = source.readByte().toInt() != 0
-        val refreshToken = if (hasRefreshToken) {
-            source.readUtf8()
-        } else null
+        val accessTokenLength = source.readLong()
+        val accessToken = source.readUtf8(accessTokenLength)
+
+        val refreshTokenLength = source.readLong()
+        if (refreshTokenLength == 0L) {
+            return BearerTokens(accessToken, null)
+        }
+        val refreshToken = source.readUtf8(refreshTokenLength)
 
         return BearerTokens(accessToken, refreshToken)
     }
@@ -30,19 +33,15 @@ object BearerTokenSerializer : OkioSerializer<BearerTokens?> {
         sink: BufferedSink
     ) {
         if (t == null) {
-            sink.writeByte(0)
             return
         }
 
-        val bearerTokens = t
-        sink.writeUtf8(bearerTokens.accessToken)
+        sink.writeLong(t.accessToken.length.toLong())
+        sink.writeUtf8(t.accessToken)
 
-        val refreshToken = bearerTokens.refreshToken
-        if (refreshToken != null) {
-            sink.writeByte(1)
+        t.refreshToken?.let { refreshToken ->
+            sink.writeLong(refreshToken.length.toLong())
             sink.writeUtf8(refreshToken)
-        } else {
-            sink.writeByte(0)
-        }
+        } ?: sink.writeLong(0L)
     }
 }

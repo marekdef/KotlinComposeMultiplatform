@@ -13,8 +13,12 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.AlignmentLine
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -28,7 +32,7 @@ fun LoginScreen(
 ) {
 
     ObserveAsEvents(viewModel.events) {
-        when(it) {
+        when (it) {
             is LoginViewModel.Event.LoggedIn -> onLoggedIn()
         }
     }
@@ -54,15 +58,21 @@ fun LoginScreen(
             Text("Login")
         })
     }) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
+        Column(
+            modifier = Modifier.padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             TextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = state.username,
+                readOnly = state.isLoading,
                 onValueChange = onUserNameChange
             )
 
             TextField(
+                visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
+                readOnly = state.isLoading,
                 value = state.password,
                 onValueChange = onPasswordChange
             )
@@ -84,7 +94,11 @@ fun LoginScreen(
                 onClick = onLoginClick,
                 enabled = !state.isLoading
             ) {
-                Text("Login")
+                if (state.isLoading) {
+                    Text("Loading...")
+                } else {
+                    Text("Login")
+                }
             }
         }
 
