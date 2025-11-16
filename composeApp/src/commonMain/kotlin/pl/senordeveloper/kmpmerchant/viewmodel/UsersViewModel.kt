@@ -9,14 +9,14 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import pl.senordeveloper.kmpmerchant.database.dao.UserDao
 import pl.senordeveloper.kmpmerchant.network.dto.users.FullUser
 import pl.senordeveloper.kmpmerchant.network.services.UserService
 
 class UsersViewModel(
-    val userService: UserService
-) : ViewModel(
-
-) {
+    val userService: UserService,
+    val userDao: UserDao
+) : ViewModel() {
 
     // create mutable state flow
     private val _state = MutableStateFlow(State())

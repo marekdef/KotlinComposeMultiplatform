@@ -18,6 +18,7 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import pl.senordeveloper.kmpmerchant.TokenStorage
 import pl.senordeveloper.kmpmerchant.network.dto.RefreshTokenRequest
@@ -108,5 +109,5 @@ val viewModelsModule = module {
     viewModel { LoginViewModel(authService = get(),
         tokenStorage = get()) }
     viewModel { UserLoggedInViewModel(authService = get()) }
-    viewModel { UsersViewModel(userService = get()) }
+    viewModelOf(::UsersViewModel)
 }

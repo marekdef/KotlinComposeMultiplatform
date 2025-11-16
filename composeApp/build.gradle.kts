@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinx.serialization) // Added Kotlin Serialization plugin
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.androidx.room)
 }
 
 kotlin {
@@ -41,6 +43,8 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.coil.compose.android)
+
+            implementation(libs.androidx.room.sqlite.wrapper)
         }
         androidUnitTest.dependencies {
             implementation(libs.bundles.unit.tests)
@@ -73,6 +77,10 @@ kotlin {
             implementation(libs.androidx.datastore)
             // The Preferences DataStore library
             implementation(libs.androidx.datastore.preferences)
+
+            // room
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -81,6 +89,11 @@ kotlin {
         }
     }
 }
+
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 
 android {
     namespace = "pl.senordeveloper.kmpmerchant"
@@ -116,4 +129,12 @@ android {
                 test.useJUnitPlatform()
         }
     }
+}
+
+
+dependencies {
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+//    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
 }
