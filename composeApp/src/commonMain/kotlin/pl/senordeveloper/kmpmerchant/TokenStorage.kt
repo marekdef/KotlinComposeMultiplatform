@@ -1,11 +1,9 @@
 package pl.senordeveloper.kmpmerchant
 
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.withTimeout
 
 class TokenStorage(
     private val dataStore: DataStore<BearerTokens?>
@@ -17,7 +15,10 @@ class TokenStorage(
     }
 
     suspend fun readBearerToken(): BearerTokens? =
-        dataStore.data.firstOrNull()
+        withTimeout(1000) {
+            dataStore.data.firstOrNull()
+        }
+
 }
 
 

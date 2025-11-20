@@ -17,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import pl.senordeveloper.kmpmerchant.network.dto.User
 import pl.senordeveloper.kmpmerchant.network.dto.users.Address
 import pl.senordeveloper.kmpmerchant.network.dto.users.Bank
 import pl.senordeveloper.kmpmerchant.network.dto.users.Company
@@ -63,7 +64,7 @@ fun UsersScreen(
 }
 
 @Composable
-fun UserItem(user: FullUser) {
+fun UserItem(user: User) {
     Row(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
         AsyncImage(
             modifier = Modifier.padding(8.dp),
@@ -155,7 +156,9 @@ fun UsersScreenPreview() {
                     ),
                     role = "user"
                 )
-            )
+            ).map {
+                User.fromFullUser(it)
+            }
         )
     )
 }

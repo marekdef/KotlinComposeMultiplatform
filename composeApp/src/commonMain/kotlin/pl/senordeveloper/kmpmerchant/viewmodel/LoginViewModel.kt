@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import pl.senordeveloper.kmpmerchant.TokenStorage
-import pl.senordeveloper.kmpmerchant.di.Storage
 import pl.senordeveloper.kmpmerchant.network.services.AuthService
 
 class LoginViewModel(

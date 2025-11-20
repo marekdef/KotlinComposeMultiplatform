@@ -10,7 +10,9 @@ import pl.senordeveloper.kmpmerchant.database.entities.UserEntity
 @Database(
     entities = [
         UserEntity::class
-    ], version = 1
+    ], version = 2,
+    exportSchema = true,
+
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {

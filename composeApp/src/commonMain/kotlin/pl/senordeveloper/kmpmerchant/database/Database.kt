@@ -15,7 +15,7 @@ val databaseModule = module {
     single {
         get<AppDatabase>().userDao
     }
-    }
+}
 
 fun getRoomDatabase(
     builder: RoomDatabase.Builder<AppDatabase>

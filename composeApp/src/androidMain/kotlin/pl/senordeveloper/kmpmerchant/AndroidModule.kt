@@ -1,12 +1,11 @@
 package pl.senordeveloper.kmpmerchant
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
+import androidx.room.RoomDatabase
 import okio.Path.Companion.toOkioPath
 import org.koin.dsl.module
+import pl.senordeveloper.kmpmerchant.database.AppDatabase
+import pl.senordeveloper.kmpmerchant.database.getDatabaseBuilder
 import pl.senordeveloper.kmpmerchant.datastore.PathProvider
 
 val androidModule = module {
@@ -15,5 +14,9 @@ val androidModule = module {
         return@single { fileName: String ->
             context.filesDir.resolve(fileName).absoluteFile.toOkioPath()
         }
+    }
+
+    single<RoomDatabase.Builder<AppDatabase>> {
+        getDatabaseBuilder(get())
     }
 }

@@ -1,11 +1,11 @@
 package pl.senordeveloper.kmpmerchant
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
+import androidx.room.RoomDatabase
 import kotlinx.cinterop.ExperimentalForeignApi
 import okio.Path.Companion.toPath
 import org.koin.dsl.module
+import pl.senordeveloper.kmpmerchant.database.AppDatabase
+import pl.senordeveloper.kmpmerchant.database.getDatabaseBuilder
 import pl.senordeveloper.kmpmerchant.datastore.PathProvider
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
@@ -26,5 +26,9 @@ val iosModule = module {
             requireNotNull(documentDirectory)
             (documentDirectory.path + "/$fileName").toPath()
         }
+    }
+
+    single<RoomDatabase.Builder<AppDatabase>> {
+        getDatabaseBuilder()
     }
 }
